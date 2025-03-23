@@ -55,7 +55,10 @@
             const data = await response.json();
             
             if (Array.isArray(data)) {
-                products = data;
+                products = data.map(product => {
+                    //fiyatları değiştirmeden ürünleri döndürüyoeuz
+                    return product;
+                });
             } else {
                 console.error("API yanıtı beklenen formatta değil:", data);
                 return;
@@ -105,8 +108,8 @@
             const img = product.img || "https://via.placeholder.com/150";
             const price = typeof product.price !== 'undefined' ? product.price : 0;
             const originalPrice = typeof product.original_price !== 'undefined' ? product.original_price : price;
-            
-            const isDiscounted = price !== originalPrice;
+            // Eğer price, original_price'tan büyükse, indirimli fiyat yok demektir.
+            const isDiscounted = price < originalPrice;
             const discountAmount = isDiscounted ? Math.round((originalPrice - price) * 100 / originalPrice) : 0;
             
             const isFavorite = favorites.includes(id);
